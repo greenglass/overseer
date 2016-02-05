@@ -1,0 +1,4 @@
+inherit_from: .rubocop-todo.yml
+
+Documentation:
+  Enabled: true
