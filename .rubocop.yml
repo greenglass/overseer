@@ -1,4 +1,33 @@
-inherit_from: .rubocop-todo.yml
+inherit_from: .rubocop_todo.yml
 
-Documentation:
-  Enabled: true
+AllCops:
+  Exclude:
+  - 'sc-chef-repo/**/*'
+  - 'tmp/**/*'
+  - 'Gemfile'
+  - 'Rakefile'
+  - 'bin/**/*'
+
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+
+# Allow 100 lines for all cases. If you are writing code that
+# requires longer lines, you would put a local .rubocop.yml in that
+# directory so that your new requirements are not imposed on the
+# entire project
+Metrics/LineLength:
+  Max: 100
+  AllowURI: true
+  URISchemes:
+    - http
+    - https
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/FileName:
+  Exclude:
+  - 'Cullfile'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
