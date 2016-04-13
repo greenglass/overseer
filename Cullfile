@@ -1,0 +1,120 @@
+#!bin/env ruby
+# this makes the editor use ruby syntax highlighting etc
+
+### cloud formation stack rules ###
+cfn_stack_delete_rule do |stack|
+  age = Time.now - stack.creation_time
+
+  age > 10.days
+end
+
+cfn_stack_delete_rule do |stack|
+  age = Time.now - stack.creation_time
+
+  age > 5.days && stack.stack_name.match(/rspec/i)
+end
+
+cfn_stack_protect_rule do |stack|
+  stack.stack_name.match(/DONOTDELETE/i)
+end
+
+### ec2 instances related rules ###
+stackless_ec2_delete_rule do |instance|
+  age = Time.now - instance.launch_time
+
+  (age > 3.days) && instance.name.empty?
+end
+
+stackless_ec2_delete_rule do |instance|
+  age = Time.now - instance.launch_time
+
+  (age > 5.hours) && instance.name.match(/Packer Builder/)
+end
+
+stackless_ec2_delete_rule do |instance|
+  # expect instance launch time to be represented in UTC
+  # so all times are converted to UTC
+  age = Time.now.utc - instance.launch_time
+
+  all_tags = instance.tags
+  tag_hash = Hash[all_tags.map { |t| [t.key, t.value] }]
+  created_by = tag_hash['created-by']
+  created_by ||= 'non-existent'
+
+  (age > 3.days) && created_by.match(/test-kitchen/)
+end
+
+### S3 related rules ###
+s3_bucket_protect_rule do |s3|
+  s3.name.match(/DONOTDELETE/i)
+end
+
+s3_bucket_delete_rule do |s3|
+  age = Time.now - s3.creation_date
+
+  age > 5.days && s3.name.match(/rspec/i)
+end
+
+s3_bucket_delete_rule do |s3|
+  age = Time.now - s3.creation_date
+
+  age > 7.days
+end
+
+### IAM Role related rules ###
+
+iam_role_protect_rule do |role|
+  role.role_name.match(/DONOTDELETE/i)
+end
+
+iam_role_delete_rule do |role|
+  age = Time.now - role.create_date
+
+  age > 5.days && role.role_name.match(/rspec/i)
+end
+
+iam_role_delete_rule do |role|
+  age = Time.now - role.create_date
+
+  age > 7.days
+end
+
+### IAM Instance Policy related rules ###
+
+iam_instance_profile_protect_rule do |profile|
+  profile.instance_profile_name.match(/DONOTDELETE/i)
+end
+
+iam_instance_profile_delete_rule do |profile|
+  age = Time.now - profile.create_date
+
+  age > 5.days && profile.instance_profile_name.match(/rspec/i)
+end
+
+iam_instance_profile_delete_rule do |profile|
+  age = Time.now - profile.create_date
+
+  age > 7.days
+end
+
+### Security group related rules ###
+security_group_protect_rule do |sg|
+  sg.group_name.match(/DONOTDELETE/i)
+end
+
+security_group_delete_rule do |sg|
+  sg.group_name.match(/packer/i)
+end
+
+security_group_delete_rule do |sg|
+  sg.group_name.match(/rspec/i)
+end
+
+security_group_delete_rule do |sg|
+  sg.group_name.match(/launch/i)
+end
+
+### Keypair related rules ###
+key_pair_delete_rule do |keypair|
+  keypair.key_name.match(/packer/i)
+end
