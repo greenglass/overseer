@@ -93,10 +93,10 @@ module Overseer
           false
         end
 
-        def get_istance_info(instance_id)
+        def get_instance_info(instance_id)
           @ec2_client.describe_instances(instance_ids: [instance_id])
         rescue Aws::EC2::Errors::InvalidInstanceIDNotFound
-          LOGGER.warn "get_istance_info: instance #{instance_id} does not exist"
+          LOGGER.warn "get_instance_info: instance #{instance_id} does not exist"
           nil
         end
 
@@ -123,18 +123,12 @@ module Overseer
         def find_image_id(image_name)
           resp = @ec2_client.describe_images(create_name_filter(image_name))
 
-          if resp.images.size > 0
+          if resp.images.empty?
             resp.images.first.image_id
           else
             fail(OverseerError,
                  "Unable to find ami_id for: #{image_name}")
           end
-        end
-
-        def find_windows_password(instance_id, key_pair_path)
-          instance = Aws::EC2::Resource.new(client: @ec2_client).instance(instance_id)
-
-          instance.decrypt_windows_password(key_pair_path)
         end
 
         def terminate_instance(instance)
@@ -199,10 +193,6 @@ module Overseer
           )
         end
 
-        def instance_private_ip(instance_id)
-          find_instance(instance_id).private_ip_address
-        end
-
         def all_security_groups
           @ec2_client.describe_security_groups.security_groups
         end
@@ -237,7 +227,7 @@ module Overseer
           fail(
             OverseerError,
             "Security group doesn't exist: vpc_id=#{vpc_id} group_name=#{group_name}"
-          ) if groups.size == 0
+          ) if groups.empty?
 
           groups.first.group_id
         end
@@ -294,27 +284,9 @@ module Overseer
           fail(
             OverseerError,
             "No subnet found: vpc_id=#{vpc_id} subnet_name=#{subnet_name}"
-          ) if subnets.size == 0
+          ) if subnets.empty?
 
           subnets.first.subnet_id
-        end
-
-        def copy_ami_to_regions(ami_id, ami_name)
-          regions_to_copy = SUPPORTED_REGIONS - [AWS_REGION]
-
-          regions_to_copy.each do |dest_region|
-            Aws::EC2::Client.new(region: dest_region).copy_image(
-              source_region: AWS_REGION,
-              source_image_id: ami_id,
-              name: ami_name
-            )
-          end
-        end
-
-        def change_launch_permissions(ami_id)
-          @ec2_client.modify_image_attribute(
-            image_id: ami_id
-          )
         end
       end
     end

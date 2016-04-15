@@ -7,8 +7,8 @@ module Overseer
       # Class manages culling logic for ec2
       class SecurityGroupHerder < HerderDefinition
         def initialize
-          @ec2_wrapper = AwsWrappers::Ec2Client.new
-          @cfn_wrapper = AwsWrappers::CfnClient.new
+          @ec2_wrapper = Wrappers::Ec2Client.new
+          @cfn_wrapper = Wrappers::CfnClient.new
           super
         end
 

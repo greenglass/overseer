@@ -7,7 +7,7 @@ module Overseer
       # Class manages culling logic for ec2 instances
       class CfnStackHerder < HerderDefinition
         def initialize
-          @cfn_wrapper = AwsWrappers::CfnClient.new
+          @cfn_wrapper = Wrappers::CfnClient.new
           super
         end
 

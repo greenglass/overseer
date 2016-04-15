@@ -7,8 +7,8 @@ module Overseer
       # Class manages culling logic for IAM Instance Profiles
       class IamInstanceProfileHerder < HerderDefinition
         def initialize
-          @iam_wrapper = AwsWrappers::IamClient.new
-          @cfn_wrapper = AwsWrappers::CfnClient.new
+          @iam_wrapper = Wrappers::IamClient.new
+          @cfn_wrapper = Wrappers::CfnClient.new
           super
         end
 
@@ -30,7 +30,7 @@ module Overseer
 
           instance_profile_ids_in_stacks =
             all_stacks.keys.each_with_object([]) do |region, instance_profiles|
-              cfn = AwsWrappers::CfnClient.new(region)
+              cfn = Wrappers::CfnClient.new(region)
               instance_profiles.concat(all_stacks[region].flat_map do |stack|
                 sleep(0.2)
                 cfn.list_instance_profiles_in_stack(stack.stack_name)

@@ -7,8 +7,8 @@ module Overseer
       # Class manages culling logic for s3
       class S3Herder < HerderDefinition
         def initialize
-          @s3_wrapper = AwsWrappers::S3Client.new
-          @cfn_wrapper = AwsWrappers::CfnClient.new
+          @s3_wrapper = Wrappers::S3Client.new
+          @cfn_wrapper = Wrappers::CfnClient.new
           super
         end
 

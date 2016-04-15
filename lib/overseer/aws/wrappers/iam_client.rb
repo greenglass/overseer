@@ -61,7 +61,7 @@ module Overseer
             puts format(
               BASE_RESOURCE_FORMAT,
               profile.instance_profile_name,
-              AwsWrappers.age_string_from_time(profile.create_date),
+              Wrappers.age_string_from_time(profile.create_date),
               profile.roles.map(&:role_name)
             )
           end
@@ -74,7 +74,7 @@ module Overseer
             puts format(
               BASE_RESOURCE_FORMAT,
               role.role_name,
-              AwsWrappers.age_string_from_time(role.create_date),
+              Wrappers.age_string_from_time(role.create_date),
               ''
             )
           end

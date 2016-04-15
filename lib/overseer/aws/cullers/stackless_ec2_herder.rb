@@ -8,8 +8,8 @@ module Overseer
       # Class manages culling logic for ec2 instances
       class StacklessEc2Herder < HerderDefinition
         def initialize
-          @cfn_wrapper = AwsWrappers::CfnClient.new
-          @ec2_wrapper = AwsWrappers::Ec2Client.new
+          @cfn_wrapper = Wrappers::CfnClient.new
+          @ec2_wrapper = Wrappers::Ec2Client.new
           super
         end
 
