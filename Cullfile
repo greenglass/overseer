@@ -3,8 +3,8 @@
 
 ### ec2 instances related rules ###
 stackless_ec2_delete_rule do |instance|
-  # age = Time.now - instance.launch_time
+  age = Time.now - instance.launch_time
 
-  # (age > 3.days) && instance.name.empty?
-  true
+  (age > 5.mins) && instance.name.match(/test/i)
+  false
 end
