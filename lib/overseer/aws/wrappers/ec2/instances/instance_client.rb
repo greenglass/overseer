@@ -13,22 +13,22 @@ module Overseer
             end
 
             def get_instance_info(instance_id)
-              @ec2_client.describe_instances(instance_ids: [instance_id])
+              EC2_CLIENT.describe_instances(instance_ids: [instance_id])
             rescue Aws::EC2::Errors::InvalidInstanceIDNotFound
               LOGGER.warn "get_instance_info: instance #{instance_id} does not exist"
               nil
             end
 
             def terminate_instance(instance)
-              @ec2_client.terminate_instances(instance_ids: [instance.instance_id])
+              EC2_CLIENT.terminate_instances(instance_ids: [instance.instance_id])
             end
 
             def find_instance(instance_id)
-              Aws::EC2::Resource.new(client: @ec2_client).instance(instance_id)
+              Aws::EC2::Resource.new(client: EC2_CLIENT).instance(instance_id)
             end
 
             def all_instances
-              @ec2_client.describe_instances(
+              EC2_CLIENT.describe_instances(
                 max_results: 100_000
               ).reservations.flat_map(&:instances)
             end
@@ -55,7 +55,7 @@ module Overseer
               format(
                 EC2_PRINT_FORMAT,
                 get_instance_name(instance),
-                AwsWrappers.age_string_from_time(instance.launch_time),
+                Wrappers.age_string_from_time(instance.launch_time),
                 instance.state.name,
                 instance.instance_id
               )

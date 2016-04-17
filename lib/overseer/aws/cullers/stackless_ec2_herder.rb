@@ -1,5 +1,5 @@
-require 'overseer/aws/wrappers/ec2_client'
-require 'overseer/aws/wrappers/cfn_client'
+require 'overseer/aws/wrappers/ec2/instances/instance_client'
+require 'overseer/aws/wrappers/cloud_formation/cfn_client'
 require 'overseer/aws/cullers/herder_definition'
 
 module Overseer
@@ -8,8 +8,8 @@ module Overseer
       # Class manages culling logic for ec2 instances
       class StacklessEc2Herder < HerderDefinition
         def initialize
-          @cfn_wrapper = Wrappers::CfnClient.new
-          @ec2_wrapper = Wrappers::Ec2Client.new
+          @cfn_wrapper = Wrappers::CloudFormation::CfnClient.new
+          @ec2_wrapper = Wrappers::Ec2::Instances::InstanceClient.new
           super
         end
 
@@ -27,7 +27,7 @@ module Overseer
         end
 
         def print_resources(resources_to_delete)
-          @ec2_wrapper.print_ec2s(resources_to_delete)
+          @ec2_wrapper.print_instances(resources_to_delete)
         end
 
         def delete_resources(resources_to_delete)

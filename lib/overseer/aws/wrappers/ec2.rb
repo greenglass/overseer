@@ -11,7 +11,7 @@ module Overseer
         EC2_PRINT_FORMAT = "#{BASE_RESOURCE_FORMAT}    %-13s".freeze
         SUPPORTED_REGIONS = ['us-east-1', 'us-west-2'].freeze
 
-        @ec2_client = Aws::EC2::Client.new(region: AWS_REGION)
+        EC2_CLIENT = Aws::EC2::Client.new(region: AWS_REGION)
 
         def region_endpoints
           @ec2_client.describe_regions.regions.map(&:endpoint)
@@ -32,7 +32,7 @@ module Overseer
             filters: [
               { name: 'vpc-id', values: [vpc_id] },
               { name: 'tag:Name', values: [subnet_name] }
-            ]
+          ]
           ).subnets
 
           raise(

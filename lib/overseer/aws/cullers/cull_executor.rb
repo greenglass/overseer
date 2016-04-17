@@ -12,22 +12,16 @@ module Overseer
         end
 
         SUPPORTED_RESOURCES = [
-          :cfn_stack,
-          :stackless_ec2,
-          :s3_bucket,
-          :security_group,
-          :key_pair,
-          :iam_role,
-          :iam_instance_profile
+          :stackless_ec2
         ].freeze
 
         SUPPORTED_RESOURCES.each do |resource|
           define_method("#{resource}_delete_rule") do |&rule_block|
-            instance_variable_get("@#{__callee__}s") << rule_block
+          instance_variable_get("@#{__callee__}s") << rule_block
           end
 
           define_method("#{resource}_protect_rule") do |&rule_block|
-            instance_variable_get("@#{__callee__}s") << rule_block
+          instance_variable_get("@#{__callee__}s") << rule_block
           end
         end
 
@@ -50,13 +44,7 @@ module Overseer
 
         def gather_the_herd(type)
           herder_hash = {
-            cfn_stack: CfnStackHerder.new,
-            stackless_ec2: StacklessEc2Herder.new,
-            s3_bucket: S3Herder.new,
-            iam_role: IamRoleHerder.new,
-            iam_instance_profile: IamInstanceProfileHerder.new,
-            security_group: SecurityGroupHerder.new,
-            key_pair: KeypairHerder.new
+            stackless_ec2: StacklessEc2Herder.new
           }
 
           return herder_hash[type] if SUPPORTED_RESOURCES.include? type

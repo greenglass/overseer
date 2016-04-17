@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+
+Bundler.require(:test)
+
+$:.unshift File.join(__dir__, '..', 'lib')
+
+require 'overseer/aws/cullers/cull_executor'
+require 'overseer/aws/cullers/stackless_ec2_herder'
+
+require 'highline/import'
+require 'thor'
+
+module Overseer
+  module AWS
+    module Cullers
+      class CullRunner < Thor
+        CullExecutor::SUPPORTED_RESOURCES.each do |resource|
+
+          option :confirm, :type => :boolean, :default => true
+          option :dry_run, :type => :boolean
+          desc resource, "Cull #{resource}"
+          define_method(resource) do
+            executor = CullExecutor.new
+            executor.parse_config
+            executor.cull(resource, options)
+          end
+        end
+
+        option :confirm, :type => :boolean, :default => true
+        option :dry_run, :type => :boolean
+        desc "all", "Cull all resource types"
+        def all
+          executor = CullExecutor.new
+          executor.parse_config
+          CullExecutor::SUPPORTED_RESOURCES.each do |type|
+            executor.cull(type, options)
+          end
+        end
+
+        no_commands do
+        end
+      end
+
+      CullRunner.start(ARGV)
+    end
+  end
+end

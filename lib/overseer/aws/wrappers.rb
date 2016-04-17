@@ -4,7 +4,7 @@ module Overseer
   module AWS
     # encapsulate helper logic based around the aws clients
     module Wrappers
-      AWS_REGION = ENV['AWS_REGION'] || 'us-east-1'
+      AWS_REGION = ENV['AWS_REGION'] || 'us-west-2'
 
       ALL_REGIONS = %w(
       us-east-1

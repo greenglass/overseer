@@ -1,4 +1,4 @@
-require 'overseer/aws/wrappers/cfn_client'
+require 'overseer/aws/wrappers/cloud_formation/cfn_client'
 require 'overseer/aws/cullers/herder_definition'
 
 module Overseer
@@ -7,7 +7,7 @@ module Overseer
       # Class manages culling logic for ec2 instances
       class CfnStackHerder < HerderDefinition
         def initialize
-          @cfn_wrapper = Wrappers::CfnClient.new
+          @cfn_wrapper = Wrappers::CloudFormation::CfnClient.new
           super
         end
 
